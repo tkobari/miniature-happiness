@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗号資産の新しいルール解説：資金決済法から金商法へ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Slate, Sky Blue, White) -->
+    <!-- Application Structure Plan: The application is structured as a narrative journey for a beginner investor. It starts with the "Why" (market growth), moves to the "What" (a clear, interactive comparison of the two laws), then answers the crucial "What's in it for me?" question with a toggleable Merits vs. Demerits section. This is followed by a visual representation of the key problems (challenges) the new regulation aims to solve, and concludes with a look at the future. This user-centric flow is more intuitive than a legalistic chapter-by-chapter structure, making complex information digestible and engaging by progressively building understanding. -->
+    <!-- Visualization & Content Choices: 1. Market Growth (Goal: Show Change/Context) -> Interactive Bar/Line Charts (Chart.js/Canvas) -> Justification: Visually demonstrates the explosive growth that necessitates new rules. 2. Law Comparison (Goal: Compare/Inform) -> Two-column HTML layout with icons -> Justification: A direct, scannable comparison is the clearest way to explain the differences. 3. Merits/Demerits (Goal: Organize/Compare) -> Interactive Toggled Cards (HTML/JS) -> Justification: Allows users to focus on one perspective at a time, reducing cognitive load. 4. Key Challenges (Goal: Inform) -> Icon-driven card layout (HTML/CSS) -> Justification: Breaks down complex problems into simple, memorable points. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-active {
+            border-color: #0ea5e9; /* sky-500 */
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .tab-inactive {
+            border-color: #cbd5e1; /* slate-300 */
+            background-color: white;
+            color: #475569; /* slate-600 */
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-sky-600">⚖️</span>
+                    <h1 class="ml-2 text-lg font-bold text-slate-800">暗号資産の新しいルール</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#vision" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">なぜ変わる？</a>
+                    <a href="#comparison" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">法律の比較</a>
+                    <a href="#pros-cons" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">メリットとデメリット</a>
+                    <a href="#future" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">今後の展望</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section 1: Vision & Market Growth -->
+        <section id="vision" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">なぜ、暗号資産のルールは変わるのか？</h2>
+            <p class="max-w-3xl mx-auto text-slate-600 mb-10 md:mb-12">
+                暗号資産は、もはや一部の技術好きのものではありません。日本国内の利用者預託金は<span class="font-bold text-sky-600">5兆円</span>を超え、多くの人が「投資」の対象として取引しています。この大きな変化に合わせ、投資家をよりしっかり守るために、国のルールも「決済」から「投資」重視へと進化しようとしているのです。
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 md:gap-12">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4">利用者口座数の推移</h3>
+                    <p class="text-sm text-slate-500 mb-4">口座数は右肩上がりに増加しています。</p>
+                    <div class="chart-container">
+                        <canvas id="userAccountsChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-slate-800 mb-4">利用者預託金残高の推移</h3>
+                    <p class="text-sm text-slate-500 mb-4">市場規模の拡大が分かります。</p>
+                    <div class="chart-container">
+                        <canvas id="userDepositsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Law Comparison -->
+        <section id="comparison" class="mb-16 md:mb-24">
+            <div class="text-center mb-10 md:mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">２つの法律、何が違う？</h2>
+                <p class="max-w-3xl mx-auto text-slate-600">
+                    これまでの「資金決済法」と、新しい「金融商品取引法（金商法）」。それぞれの法律が暗号資産をどのように捉え、どんなルールを定めているのかを比べてみましょう。この違いが、今後の取引環境を大きく変えるポイントです。
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Current Law: Payment Services Act -->
+                <div class="bg-white p-6 md:p-8 rounded-xl border-2 border-slate-200">
+                    <h3 class="text-2xl font-bold mb-4 text-slate-700">【これまで】資金決済法</h3>
+                    <div class="mb-6">
+                        <span class="inline-block bg-slate-100 text-slate-700 text-sm font-medium px-3 py-1 rounded-full mb-2">位置づけ</span>
+                        <p class="font-bold text-lg">決済・送金のための「手段」</p>
+                        <p class="text-sm text-slate-500">（お金や電子マネーに近いイメージ）</p>
+                    </div>
+                    <div class="space-y-4 text-slate-600">
+                        <div class="flex items-start">
+                            <span class="mr-3 mt-1 text-sky-500">✓</span>
+                            <p><span class="font-semibold">主な目的:</span> 安全な決済システムの確保と、利用者のお金を保護すること。</p>
+                        </div>
+                        <div class="flex items-start">
+                             <span class="mr-3 mt-1 text-sky-500">✓</span>
+                            <p><span class="font-semibold">主な規制:</span> 取引所の登録制、顧客資産の分別管理（会社の資産と分ける）、本人確認（KYC）の義務化。</p>
+                        </div>
+                         <div class="flex items-start">
+                             <span class="mr-3 mt-1 text-sky-500">✓</span>
+                            <p><span class="font-semibold">投資家保護:</span> 基本的な保護が中心。詐欺的な勧誘や相場操縦といった巧妙な手口への対策は限定的。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- New Law: FIEA -->
+                <div class="bg-white p-6 md:p-8 rounded-xl border-2 border-sky-500 shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-sky-600">【これから】金融商品取引法 (金商法)</h3>
+                     <div class="mb-6">
+                        <span class="inline-block bg-sky-100 text-sky-700 text-sm font-medium px-3 py-1 rounded-full mb-2">位置づけ</span>
+                        <p class="font-bold text-lg">価値が変動する「投資商品」</p>
+                        <p class="text-sm text-slate-500">（株式や投資信託に近いイメージ）</p>
+                    </div>
+                    <div class="space-y-4 text-slate-600">
+                        <div class="flex items-start">
+                            <span class="mr-3 mt-1 text-green-500">✓</span>
+                            <p><span class="font-semibold">主な目的:</span> 投資家をあらゆるリスクから守り、公正で透明性の高い市場を作ること。</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="mr-3 mt-1 text-green-500">✓</span>
+                            <p><span class="font-semibold">主な規制:</span> 資金決済法の内容に加え、インサイダー取引や相場操縦などの不公正な取引を厳しく禁止。</p>
+                        </div>
+                         <div class="flex items-start">
+                            <span class="mr-3 mt-1 text-green-500">✓</span>
+                            <p><span class="font-semibold">投資家保護:</span> 格段に強化。「聞いていた話と違う」を防ぐための情報開示、しつこい勧誘の禁止など、より厳格なルールが適用される。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Pros and Cons -->
+        <section id="pros-cons" class="mb-16 md:mb-24">
+            <div class="text-center mb-10 md:mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">あなたへの影響は？</h2>
+                <p class="max-w-3xl mx-auto text-slate-600">
+                    金商法への移行は、私たち投資家にとって良いことばかりなのでしょうか？ここでは、具体的なメリットと、考えられるデメリットを切り替えて見ていきましょう。
+                </p>
+            </div>
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8">
+                <button id="show-pros" class="tab-button tab-active py-2 px-6 font-bold border-2 rounded-l-lg transition-all">メリット 👍</button>
+                <button id="show-cons" class="tab-button tab-inactive py-2 px-6 font-bold border-2 rounded-r-lg transition-all">デメリット 👎</button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="pros-cons-content" class="transition-opacity duration-500">
+                <!-- Merits will be injected here -->
+            </div>
+        </section>
+        
+        <!-- Section 4: Key Challenges -->
+        <section id="challenges" class="mb-16 md:mb-24 bg-slate-100 py-12 md:py-16 rounded-xl">
+            <div class="text-center mb-10 md:mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">新ルールが解決を目指す課題</h2>
+                <p class="max-w-3xl mx-auto text-slate-600">
+                    なぜ、より厳しい金商法が必要なのでしょうか？それは、現在の市場が抱える、投資家を危険にさらす様々な課題を解決するためです。金融庁の資料でも、これらの点が問題視されています。
+                </p>
+            </div>
+            <div id="challenges-content" class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+                <!-- Challenges will be injected here -->
+            </div>
+        </section>
+
+
+        <!-- Section 5: Future Outlook -->
+        <section id="future" class="text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">今後の展望</h2>
+            <p class="max-w-3xl mx-auto text-slate-600 mb-8">
+                金商法への移行は、暗号資産が「特別なもの」から「社会に認められた投資対象」へと変わる大きな一歩です。今後は、投資家保護と技術革新（Web3）のバランスをどう取るか、そして投資家にとって有利な税制（例：申告分離課税）が実現するかが大きな焦点となります。この変化は、日本の暗号資産市場がより成熟し、多くの人が安心して参加できる市場へと成長していくための重要なプロセスなのです。
+            </p>
+            <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto">
+                <h4 class="font-bold text-lg text-slate-800 mb-3">注目すべきポイント</h4>
+                <ul class="text-left space-y-2 text-slate-600">
+                    <li class="flex items-start"><span class="mr-3 text-sky-500">🔹</span>投資家保護とイノベーション促進のバランス</li>
+                    <li class="flex items-start"><span class="mr-3 text-sky-500">🔹</span>税制改正の議論（株式と同じ税率になる可能性）</li>
+                    <li class="flex items-start"><span class="mr-3 text-sky-500">🔹</span>DeFi（分散型金融）など新しい分野への規制のあり方</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Chart Data & Configuration ---
+            const chartData = {
+                userAccounts: {
+                    labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                    data: [281, 324, 394, 562, 646, 917, 1214]
+                },
+                userDeposits: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    data: [1.2, 1.5, 2.1, 3.5, 5.0]
+                }
+            };
+            
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0284c7', // sky-600
+                        titleFont: { weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        callbacks: {}
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2e8f0' /* slate-200 */ },
+                        ticks: { color: '#64748b' /* slate-500 */ }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#64748b' /* slate-500 */ }
+                    }
+                }
+            };
+
+            // --- Render Charts ---
+            const ctxAccounts = document.getElementById('userAccountsChart').getContext('2d');
+            new Chart(ctxAccounts, {
+                type: 'bar',
+                data: {
+                    labels: chartData.userAccounts.labels,
+                    datasets: [{
+                        label: '利用者口座数',
+                        data: chartData.userAccounts.data,
+                        backgroundColor: '#38bdf8', // sky-400
+                        borderColor: '#0ea5e9', // sky-500
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: { ...commonChartOptions.plugins, tooltip: { ...commonChartOptions.plugins.tooltip, callbacks: { label: (context) => `${context.parsed.y} 万口座` } } }
+                }
+            });
+
+            const ctxDeposits = document.getElementById('userDepositsChart').getContext('2d');
+            new Chart(ctxDeposits, {
+                type: 'line',
+                data: {
+                    labels: chartData.userDeposits.labels,
+                    datasets: [{
+                        label: '利用者預託金残高',
+                        data: chartData.userDeposits.data,
+                        fill: true,
+                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                        borderColor: '#0ea5e9',
+                        tension: 0.3,
+                        pointBackgroundColor: '#0ea5e9',
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: { ...commonChartOptions.plugins, tooltip: { ...commonChartOptions.plugins.tooltip, callbacks: { label: (context) => `${context.parsed.y} 兆円` } } }
+                }
+            });
+
+            // --- Pros & Cons Data ---
+            const prosConsData = {
+                pros: [
+                    { icon: '🛡️', title: '投資家保護の強化', text: '詐欺的な勧誘やインサイダー取引などの不公正な行為から、より強力に保護されます。' },
+                    { icon: '📈', title: '市場の信頼性向上', text: 'ルールが厳格になることで市場がクリーンになり、年金基金などの機関投資家が参入しやすくなります。' },
+                    { icon: '🧾', title: '税制優遇への期待', text: '株式などと同じ「申告分離課税（税率約20%）」の対象となり、税金の負担が軽くなる可能性があります。' },
+                    { icon: '✨', title: '新たな投資機会', text: '不動産や株式などをトークン化した「セキュリティトークン」など、新しい投資商品が生まれやすくなります。' }
+                ],
+                cons: [
+                    { icon: '🕊️', title: 'イノベーションの阻害', text: '厳しい規制が、自由で新しい技術やサービスの誕生を妨げてしまう可能性があります。' },
+                    { icon: '💸', title: '事業者の海外流出', text: 'コンプライアンスのコスト増を嫌った国内事業者が、より規制の緩い海外へ移転してしまうかもしれません。' },
+                    { icon: '🔗', title: 'DeFiへの影響', text: '管理者のいない分散型金融（DeFi）に、現在の法律をどう適用するかは大きな課題として残っています。' },
+                    { icon: '📝', title: '手続きの複雑化', text: '新しいコイン（トークン）を発行する際の手続きが複雑になり、新規プロジェクトが生まれにくくなる懸念があります。' }
+                ]
+            };
+            
+            // --- Key Challenges Data ---
+            const challengesData = [
+                { icon: '🎣', title: '詐欺的な投資勧誘の多発', text: '「必ず儲かる」といった甘い言葉で誘う悪質な業者やセミナーが後を絶たず、多くの被害者を生んでいます。' },
+                { icon: '📄', title: '不十分な情報開示', text: 'プロジェクトの将来性やリスクを示す「ホワイトペーパー」の内容が曖昧で、投資家が適切な判断を下せないケースがあります。' },
+                { icon: '🤫', title: 'インサイダー取引のリスク', text: '企業の内部情報を持つ人が、情報が公開される前にこっそり売買して利益を得るような不公正な取引への対策が不十分です。'},
+                { icon: '🌍', title: '無登録の海外業者', text: '海外に拠点を置く無登録業者が日本の投資家を勧誘するケースが多く、トラブル時に追及が困難な状況です。'}
+            ];
+
+            // --- Render Functions ---
+            const prosConsContainer = document.getElementById('pros-cons-content');
+            const challengesContainer = document.getElementById('challenges-content');
+            
+            function renderProsCons(type) {
+                const items = prosConsData[type];
+                let html = `<div class="grid md:grid-cols-2 gap-6">`;
+                items.forEach(item => {
+                    html += `
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-start">
+                            <div class="card-icon mr-4">${item.icon}</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-800 mb-2">${item.title}</h4>
+                                <p class="text-slate-600 text-sm">${item.text}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                prosConsContainer.innerHTML = html;
+            }
+            
+            function renderChallenges() {
+                let html = ``;
+                 challengesData.forEach(item => {
+                    html += `
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-start">
+                            <div class="card-icon mr-4 text-red-500">${item.icon}</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-800 mb-2">${item.title}</h4>
+                                <p class="text-slate-600 text-sm">${item.text}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                challengesContainer.innerHTML = html;
+            }
+
+            // --- Event Listeners ---
+            const proButton = document.getElementById('show-pros');
+            const conButton = document.getElementById('show-cons');
+
+            proButton.addEventListener('click', () => {
+                proButton.classList.replace('tab-inactive', 'tab-active');
+                conButton.classList.replace('tab-active', 'tab-inactive');
+                prosConsContainer.style.opacity = 0;
+                setTimeout(() => {
+                    renderProsCons('pros');
+                    prosConsContainer.style.opacity = 1;
+                }, 200);
+            });
+
+            conButton.addEventListener('click', () => {
+                conButton.classList.replace('tab-inactive', 'tab-active');
+                proButton.classList.replace('tab-active', 'tab-inactive');
+                prosConsContainer.style.opacity = 0;
+                setTimeout(() => {
+                    renderProsCons('cons');
+                    prosConsContainer.style.opacity = 1;
+                }, 200);
+            });
+
+            // --- Initial Render ---
+            renderProsCons('pros');
+            renderChallenges();
+
+        });
+    </script>
+</body>
+</html>
